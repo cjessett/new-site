@@ -1,9 +1,6 @@
 source "https://rubygems.org"
 ruby RUBY_VERSION
 
-gem 'octopress', '~> 3.0'
-gem 'octopress-solarized'
-
 # Hello! This is where you manage which Jekyll version is used to run.
 # When you want to use a different version, change it below, save the
 # file and run `bundle install`. Run Jekyll with `bundle exec`, like so:
@@ -18,3 +15,5 @@ gem 'octopress-solarized'
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
 gem "github-pages"
 
+gem 'octopress', '~> 3.0'
+gem 'octopress-solarized'
