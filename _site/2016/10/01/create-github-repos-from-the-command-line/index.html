@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,800|Raleway:400,200,700" rel="stylesheet" type="text/css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" type="text/css" href="//cjessett.github.io/new-site/css/main.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CJ Jessett. I'm a web developer, rock climber, and skiing enthusiast.
+">
+    <title>Create Github repos from the command line - CJ Jessett</title>
+</head>
+
+<body>
+
+
+<nav class="small-12 large-offset-2 large-8 columns">
+  <ul>
+    <li class=""><h4><a href="/">Homepage</a></h4></li> |
+    <li class=""><h4><a href="/blog">Blog</a></h4></li>
+  </ul>
+</nav>
+
+
+<article class="post small-12 large-8 large-offset-2 columns">
+  <div class="post-date">Oct  1 2016</div>
+  <h2 class="post-title">Create Github repos from the command line</h2>
+  <div>
+    <a
+      href="https://twitter.com/share"
+      class="twitter-share-button"
+      data-show-count="false">
+    </a>
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+  <section>
+    <h3 id="because-why-not">Because why not</h3>
+
+<p>First make sure to <a href="//github.com/blog/1509-personal-api-tokens">create personal API tokens</a> with appropriate scopes to make authenticated requests to your <a href="//github.com">GitHub</a> account.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># /.bash_profile</span>
+
+github-create<span class="o">()</span> <span class="o">{</span>
+ <span class="nv">repo_name</span><span class="o">=</span><span class="nv">$1</span>
+
+ <span class="nv">dir_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="sb">`</span>
+
+ <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nb">echo</span> <span class="s2">"Repo name (hit enter to use '</span><span class="nv">$dir_name</span><span class="s2">')?"</span>
+ <span class="nb">read </span>repo_name
+ <span class="k">fi
+
+ if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nv">repo_name</span><span class="o">=</span><span class="nv">$dir_name</span>
+ <span class="k">fi</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">username</span><span class="o">=</span><span class="sb">`</span>git config github.user<span class="sb">`</span>
+ <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$username</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nb">echo</span> <span class="s2">"Could not find username, run 'git config --global github.user &lt;username&gt;'"</span>
+ <span class="nv">invalid_credentials</span><span class="o">=</span>1
+ <span class="k">fi
+
+ </span><span class="nv">token</span><span class="o">=</span><span class="sb">`</span>git config github.token<span class="sb">`</span>
+ <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$token</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nb">echo</span> <span class="s2">"Could not find token, run 'git config --global github.token &lt;token&gt;'"</span>
+ <span class="nv">invalid_credentials</span><span class="o">=</span>1
+ <span class="k">fi
+
+ if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$invalid_credentials</span><span class="s2">"</span> <span class="o">==</span> <span class="s2">"1"</span> <span class="o">]</span>; <span class="k">then
+ return </span>1
+ <span class="k">fi</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nb">echo</span> -n <span class="s2">"Creating Github repository '</span><span class="nv">$repo_name</span><span class="s2">' ..."</span>
+ curl -u <span class="s2">"</span><span class="nv">$username</span><span class="s2">:</span><span class="nv">$token</span><span class="s2">"</span> https://api.github.com/user/repos -d <span class="s1">'{"name":"'</span><span class="nv">$repo_name</span><span class="s1">'"}'</span> &gt; /dev/null 2&gt;&amp;1
+
+ <span class="nb">echo</span> <span class="s2">" done."</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">remote</span><span class="o">=</span><span class="sb">`</span>git remote -v<span class="sb">`</span>
+ <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$remote</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nb">echo</span> <span class="s2">"Add remote as origin (y/n)?"</span>
+ <span class="nb">read </span>add_remote
+ <span class="k">fi
+
+ if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$add_remote</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"y"</span> <span class="o">]</span>; <span class="k">then
+ </span><span class="nv">url</span><span class="o">=</span><span class="s2">"https://github.com/</span><span class="nv">$username</span><span class="s2">/</span><span class="nv">$repo_name</span><span class="s2">"</span>
+ <span class="sb">`</span>git remote add origin <span class="nv">$url</span><span class="sb">`</span>
+ <span class="nb">echo</span> <span class="s2">"Added '</span><span class="nv">$url</span><span class="s2">' to remote as 'origin'."</span>
+ <span class="k">fi</span>
+<span class="o">}</span></code></pre></figure>
+
+
+  </section>
+</article>
+
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
+
