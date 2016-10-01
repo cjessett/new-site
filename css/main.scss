@@ -35,10 +35,11 @@ h4 { font-size: 1.3rem; }
 a:hover { color: $font-color; }
 
 a {
-  color: #8bad93;
+  color: #8bad00;
   text-decoration: none;
   line-height: inherit;
   cursor: pointer;
+  background-color: transparent;
 }
 
 body {
