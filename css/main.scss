@@ -1,39 +1,83 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
 ---
-@charset "utf-8";
 
-// Our variables
-$base-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-$base-font-size:   16px;
-$base-font-weight: 400;
-$small-font-size:  $base-font-size * 0.875;
-$base-line-height: 1.5;
+$font-stack: "Raleway","Verdana",Helvetica,"Roboto",Arial,sans-serif;
+$font-color: #0a0a0a;
 
-$spacing-unit:     30px;
+*, *:before, *:after {
+    box-sizing: inherit;
+}
 
-$text-color:       #111;
-$background-color: #fdfdfd;
-$brand-color:      #2a7ae2;
+html {
+  box-sizing: border-box;
+  height: 100%;
 
-$grey-color:       #828282;
-$grey-color-light: lighten($grey-color, 40%);
-$grey-color-dark:  darken($grey-color, 25%);
+  body {
+    height: 100%;
+    padding-top: 40px;
+    font-family: $font-stack;
+    font-weight: normal;
+    line-height: 1.5;
+    color: $font-color;
+    background: #fefefe;
+    -webkit-font-smoothing: antialiased;
 
-// Width of the content area
-$content-width:    800px;
+    main {
+      @media screen and (min-width: 64em) {
+          width: 50%;
+          margin-left: 25%;
 
-$on-palm:          600px;
-$on-laptop:        800px;
+      }
 
-// Minima also includes a mixin for defining media queries.
-// Use media queries like this:
-// @include media-query($on-palm) {
-//     .wrapper {
-//         padding-right: $spacing-unit / 2;
-//         padding-left: $spacing-unit / 2;
-//     }
-// }
+      @media screen and (min-width: 40em) {
+          padding-left: 0.9375rem;
+          padding-right: 0.9375rem;
+      }
 
-// Import partials from the `minima` theme.
-@import "minima";
+      h1 {
+        margin: .67em 0;
+        line-height: 1.4;
+        font-weight: normal;
+        font-size: 3rem;
+      }
+
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        text-rendering: optimizeLegibility;
+
+        a:hover {
+          color: $font-color;
+        }
+
+        a {
+          color: #8bad93;
+          text-decoration: none;
+          line-height: inherit;
+          cursor: pointer;
+        }
+      }
+
+      .social {
+        margin-left: -0.5rem;
+        list-style: none;
+        padding: 1rem 0;
+        overflow: hidden;
+
+        li {
+          float: left;
+          margin-right: 1.5rem;
+
+          .fa {
+            font-size: 32px;
+            color: #404040;
+            padding: 1rem;
+          }
+        }
+      }
+    }
+  }
+}
