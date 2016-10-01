@@ -45,7 +45,6 @@ a {
 body {
   margin: 0;
   padding: 0;
-  padding-top: 3rem;
   font-family: $font-stack;
   font-weight: normal;
   line-height: 1.5;
@@ -58,6 +57,7 @@ body {
   }
 
   main#home {
+    padding-top: 3rem;
 
     ul {
       margin: 0;

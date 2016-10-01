@@ -2,9 +2,8 @@ title: CJ Jessett
 description: >
   CJ Jessett. I'm a web developer, rock climber, and skiing enthusiast.
 
-url: "localhost:4000"
 permalink: pretty
-github-url: //cjessett.github.io/new-site
+url: //cjessett.github.io/new-site
 
 email: me@cjjessett.com
 twitter: //twitter.com/kep20f
@@ -33,6 +32,3 @@ titlecase: true
 post_template: post
 page_template: page
 draft_template: draft
-
-gems:
-  - octopress-solarized
