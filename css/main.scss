@@ -3,7 +3,7 @@
 
 @import 'grid';
 
-$font-stack: "Raleway","Verdana",Helvetica,"Roboto",Arial,sans-serif;
+$font-stack: "Raleway", Verdana , "Roboto" , Arial , sans-serif;
 $font-color: #0a0a0a;
 
 *, *:before, *:after {
@@ -28,11 +28,31 @@ body {
 
   main {
 
-    h1 {
+    h1, h3 {
       margin: .67em 0;
       line-height: 1.4;
       font-weight: normal;
       font-size: 3rem;
+    }
+
+    h3 { font-size: 1.9375rem; }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      margin-left: 1.25rem;
+      list-style-position: outside;
+    }
+
+    a:hover { color: $font-color; }
+
+    a {
+      color: #8bad93;
+      text-decoration: none;
+      line-height: inherit;
+      cursor: pointer;
     }
 
     p {
@@ -42,15 +62,6 @@ body {
       line-height: 1.6;
       margin-bottom: 1rem;
       text-rendering: optimizeLegibility;
-
-      a:hover { color: $font-color; }
-
-      a {
-        color: #8bad93;
-        text-decoration: none;
-        line-height: inherit;
-        cursor: pointer;
-      }
     }
 
     .social {
