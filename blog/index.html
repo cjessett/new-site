@@ -7,7 +7,7 @@ title: "Blog"
 <article class="post">
   <header>
     <div class="post-date">{{ post.date | date: "%b %e %Y" }}</div>
-    <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+    <h2 class="post-title"><a href="{{ post.url | prepend: site.url }}">{{ post.title }}</a></h2>
   </header>
 </article>
 {% endfor %}
