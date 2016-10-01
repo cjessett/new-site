@@ -3,8 +3,13 @@ layout: blog
 title: "Blog"
 ---
 
-<ul>
 {% for post in site.posts %}
-  <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+<article class="post">
+  <header>
+    <div class="post-date">{{ post.date | date: "%b %e %Y" }}</div>
+    <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+  </header>
+</article>
 {% endfor %}
-</ul>
+
+

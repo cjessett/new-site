@@ -1,5 +1,22 @@
 ---
-layout: blog
+layout: default
 ---
 
-{{ content }}
+{% include nav.html %}
+
+<article class="post small-12 medium-8 medium-offset-2 large-6 large-offset-3 columns">
+  <div class="post-date">{{ page.date | date: "%b %e %Y" }}</div>
+  <h2 class="post-title">{{ page.title }}</h2>
+  <div>
+    <a
+      href="https://twitter.com/share"
+      class="twitter-share-button"
+      data-show-count="false">
+    </a>
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+
+  <section>
+    {{ content }}
+  </section>
+</article>
