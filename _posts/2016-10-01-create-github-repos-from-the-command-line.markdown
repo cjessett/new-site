@@ -8,43 +8,83 @@ date: 2016-10-01T03:55:31-05:00
 
 First make sure to [create personal API tokens](//github.com/blog/1509-personal-api-tokens) with appropriate scopes to make authenticated requests to your [GitHub](//github.com) account.
 
+Open up your `.bash_profile` and create a function like so:
 {% highlight bash %}
-# /.bash_profile
 
 github-create() {
- repo_name=$1
 
- dir_name=`basename $(pwd)`
+  repo_name=$1
 
- if [ "$repo_name" = "" ]; then
- echo "Repo name (hit enter to use '$dir_name')?"
- read repo_name
- fi
+}
 
- if [ "$repo_name" = "" ]; then
- repo_name=$dir_name
- fi
 {% endhighlight %}
+
+This creates a function you can call in your terminal and pass an optional argument that will be stored in the `repo_name` variable.
+
+Now create a default repository name in the case no argument is passed to the function. The command `basename $(pwd)` will print the name of the current directory, try it.
+
+{% highlight bash %}
+
+github-create() {
+
+  repo_name=$1
+
+  dir_name=`basename $(pwd)`
+
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
+
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
+
+}
+
+{% endhighlight %}
+
+Next, a conditional to check for the presence of an argument. If no argument was provided, the last conditional assigns the current directory to the variable `repo_name`.
 
 
 {% highlight bash %}
- username=`git config github.user`
- if [ "$username" = "" ]; then
- echo "Could not find username, run 'git config --global github.user <username>'"
- invalid_credentials=1
- fi
 
- token=`git config github.token`
- if [ "$token" = "" ]; then
- echo "Could not find token, run 'git config --global github.token <token>'"
- invalid_credentials=1
- fi
+github-create() {
 
- if [ "$invalid_credentials" == "1" ]; then
- return 1
- fi
+  repo_name=$1
+
+  dir_name=`basename $(pwd)`
+
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
+
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
+
+  username=`git config github.user`
+  if [ "$username" = "" ]; then
+  echo "Could not find username, run 'git config --global github.user <username>'"
+  invalid_credentials=1
+  fi
+
+  token=`git config github.token`
+  if [ "$token" = "" ]; then
+  echo "Could not find token, run 'git config --global github.token <token>'"
+  invalid_credentials=1
+  fi
+
+  if [ "$invalid_credentials" == "1" ]; then
+  return 1
+  fi
+
+}
+
 {% endhighlight %}
 
+Now we will check for a github username and token that have been set
 
 {% highlight bash %}
  echo -n "Creating Github repository '$repo_name' ..."
