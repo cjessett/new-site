@@ -5,7 +5,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,800|Raleway:400,200,700" rel="stylesheet" type="text/css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-dark.min.css">
-    <link rel="stylesheet" type="text/css" href="//cjessett.github.io/new-site/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
     <link rel="shortcut icon" href="favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="CJ Jessett. I'm a web developer, rock climber, and skiing enthusiast.
@@ -18,8 +18,8 @@
 
 <nav class="small-12 large-offset-2 large-8 columns">
   <ul>
-    <li class=""><h4><a href="//cjessett.github.io/new-site">Homepage</a></h4></li> |
-    <li class=""><h4><a href="//cjessett.github.io/new-site/blog">Blog</a></h4></li>
+    <li class=""><h4><a href="localhost:4000">Homepage</a></h4></li> |
+    <li class=""><h4><a href="localhost:4000/blog">Blog</a></h4></li>
   </ul>
 </nav>
 
@@ -36,94 +36,217 @@
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 </div>
 
-  <section>
+  <section class="post-content">
     <h3 id="because-why-not">Because why not</h3>
 
-<p>First make sure to <a href="//github.com/blog/1509-personal-api-tokens">create personal API tokens</a> with appropriate scopes to make authenticated requests to your <a href="//github.com">GitHub</a> account.</p>
+<p>This is an annotated version of <a href="https://www.viget.com/articles/create-a-github-repo-from-the-command-line">this original post</a> and a useful intro into bash scripting.</p>
 
-<p>Open up your <code class="highlighter-rouge">.bash_profile</code> and create a function like so:</p>
+<p>The command that does the work:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">github-create<span class="o">()</span> <span class="o">{</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' &gt; /dev/null 2&gt;&amp;1
 
-  <span class="nv">repo_name</span><span class="o">=</span><span class="nv">$1</span>
+</code></pre>
+</div>
 
-<span class="o">}</span></code></pre></figure>
+<p>Where <code class="highlighter-rouge">$username</code>, <code class="highlighter-rouge">$token</code>, and <code class="highlighter-rouge">$repo_name</code> are your github username, personal access token, and desired repository name respectively.</p>
 
-<p>This creates a function you can call in your terminal and pass an optional argument that will be stored in the <code class="highlighter-rouge">repo_name</code> variable.</p>
+<p>We can wrap this in a sweet bash function to do this on the fly from a local git repo. In your <code class="highlighter-rouge">~/.bash_profile</code>:</p>
 
-<p>Now create a default repository name in the case no argument is passed to the function. The command <code class="highlighter-rouge">basename $(pwd)</code> will print the name of the current directory, try it.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+github-create() {
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">github-create<span class="o">()</span> <span class="o">{</span>
+  # assign $repo_name to argument if present
+  repo_name=$1
 
-  <span class="nv">repo_name</span><span class="o">=</span><span class="nv">$1</span>
+  # capture the name of the current directory
+  dir_name=`basename $(pwd)`
 
-  <span class="nv">dir_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="sb">`</span>
+  # assign user input to $repo_name if argument was empty
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
 
-  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nb">echo</span> <span class="s2">"Repo name (hit enter to use '</span><span class="nv">$dir_name</span><span class="s2">')?"</span>
-  <span class="nb">read </span>repo_name
-  <span class="k">fi
+  # assign the current directory to $repo_name if not specified by input above
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
 
-  if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nv">repo_name</span><span class="o">=</span><span class="nv">$dir_name</span>
-  <span class="k">fi</span>
+}
 
-<span class="o">}</span></code></pre></figure>
+</code></pre>
+</div>
 
-<p>Next, a conditional to check for the presence of an argument. If no argument was provided, the last conditional assigns the current directory to the variable <code class="highlighter-rouge">repo_name</code>.</p>
+<p>This creates a function you can call in your terminal and pass an optional argument. The first line will store the argument passed to the function in the variable <code class="highlighter-rouge">$repo_name</code>.</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">github-create<span class="o">()</span> <span class="o">{</span>
+<p>The next line creates a default repository name in the case no argument is passed to the function. The command <code class="highlighter-rouge">basename $(pwd)</code> will print the name of the current directory, try it in the terminal.</p>
 
-  <span class="nv">repo_name</span><span class="o">=</span><span class="nv">$1</span>
+<p>Next, a conditional to check for the presence of an argument. If no argument was provided, the conditional reads from user input and assigns the result to <code class="highlighter-rouge">$repo_name</code>.</p>
 
-  <span class="nv">dir_name</span><span class="o">=</span><span class="sb">`</span>basename <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="sb">`</span>
+<p>The last conditional assigns the current directory name to <code class="highlighter-rouge">$repo_name</code> in the case no input was provided. If you’re curious about what’s going on here add <code class="highlighter-rouge">echo "$repo_name"</code> at the bottom of the function then open a new terminal tab and call the function with  <code class="highlighter-rouge">github-create</code>. Then try it with an argument.</p>
 
-  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nb">echo</span> <span class="s2">"Repo name (hit enter to use '</span><span class="nv">$dir_name</span><span class="s2">')?"</span>
-  <span class="nb">read </span>repo_name
-  <span class="k">fi
+<p>Next, we’ll set the username and token variables to use in our API call.</p>
 
-  if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$repo_name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nv">repo_name</span><span class="o">=</span><span class="nv">$dir_name</span>
-  <span class="k">fi
+<div class="highlighter-rouge"><pre class="highlight"><code>
+github-create() {
 
-  </span><span class="nv">username</span><span class="o">=</span><span class="sb">`</span>git config github.user<span class="sb">`</span>
-  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$username</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nb">echo</span> <span class="s2">"Could not find username, run 'git config --global github.user &lt;username&gt;'"</span>
-  <span class="nv">invalid_credentials</span><span class="o">=</span>1
-  <span class="k">fi
+  repo_name=$1
 
-  </span><span class="nv">token</span><span class="o">=</span><span class="sb">`</span>git config github.token<span class="sb">`</span>
-  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$token</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
-  </span><span class="nb">echo</span> <span class="s2">"Could not find token, run 'git config --global github.token &lt;token&gt;'"</span>
-  <span class="nv">invalid_credentials</span><span class="o">=</span>1
-  <span class="k">fi
+  dir_name=`basename $(pwd)`
 
-  if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$invalid_credentials</span><span class="s2">"</span> <span class="o">==</span> <span class="s2">"1"</span> <span class="o">]</span>; <span class="k">then
-  return </span>1
-  <span class="k">fi</span>
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
 
-<span class="o">}</span></code></pre></figure>
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
 
-<p>Now we will check for a github username and token that have been set</p>
+  # this sets $username to the result of the command 'git config github.user'
+  username=`git config github.user`
+  if [ "$username" = "" ]; then
+  echo "Could not find username, run 'git config --global github.user &lt;username&gt;'"
+  invalid_credentials=1
+  fi
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nb">echo</span> -n <span class="s2">"Creating Github repository '</span><span class="nv">$repo_name</span><span class="s2">' ..."</span>
- curl -u <span class="s2">"</span><span class="nv">$username</span><span class="s2">:</span><span class="nv">$token</span><span class="s2">"</span> https://api.github.com/user/repos -d <span class="s1">'{"name":"'</span><span class="nv">$repo_name</span><span class="s1">'"}'</span> &gt; /dev/null 2&gt;&amp;1
+  # this sets $token to the result of the command 'git config github.token'
+  token=`git config github.token`
+  if [ "$token" = "" ]; then
+  echo "Could not find token, run 'git config --global github.token &lt;token&gt;'"
+  invalid_credentials=1
+  fi
 
- <span class="nb">echo</span> <span class="s2">" done."</span></code></pre></figure>
+  # return from the function if the credentials are not found
+  if [ "$invalid_credentials" == "1" ]; then
+  return 1
+  fi
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">remote</span><span class="o">=</span><span class="sb">`</span>git remote -v<span class="sb">`</span>
- <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$remote</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>; <span class="k">then
- </span><span class="nb">echo</span> <span class="s2">"Add remote as origin (y/n)?"</span>
- <span class="nb">read </span>add_remote
- <span class="k">fi
+}
 
- if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$add_remote</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"y"</span> <span class="o">]</span>; <span class="k">then
- </span><span class="nv">url</span><span class="o">=</span><span class="s2">"https://github.com/</span><span class="nv">$username</span><span class="s2">/</span><span class="nv">$repo_name</span><span class="s2">"</span>
- <span class="sb">`</span>git remote add origin <span class="nv">$url</span><span class="sb">`</span>
- <span class="nb">echo</span> <span class="s2">"Added '</span><span class="nv">$url</span><span class="s2">' to remote as 'origin'."</span>
- <span class="k">fi</span>
-<span class="o">}</span></code></pre></figure>
+</code></pre>
+</div>
+
+<p>Here we check for a github username and token that have been set in the <code class="highlighter-rouge">~/.gitconfig</code> file. <a href="https://git-scm.com/docs/git-config">Here</a> you can find info about setting options with <code class="highlighter-rouge">git config</code>.</p>
+
+<p>To check if you have set git config options run <code class="highlighter-rouge">git config -l</code> to list all of your config options. You can also run <code class="highlighter-rouge">git config</code> for help with the command.</p>
+
+<p>Running the command <code class="highlighter-rouge">git config --global github.user &lt;YOUR_USERNAME&gt;</code>, and likewise with <code class="highlighter-rouge">github.token</code>, will write to <code class="highlighter-rouge">~/.gitconfig</code> like so:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># ~/.gitconfig
+
+[github]
+  user: &lt;YOUR_USERNAME&gt;
+  token: &lt;YOUR_TOKEN&gt;
+
+</code></pre>
+</div>
+
+<p>I set my username and token with the commands above after <a href="https://github.com/settings/tokens">generating</a> a <a href="//github.com/blog/1509-personal-api-tokens">personal API token</a> with appropriate scopes. This allows you to make authenticated requests to your <a href="//github.com">GitHub</a> account.</p>
+
+<p>Now lets add the curl request.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>
+github-create() {
+
+  repo_name=$1
+
+  dir_name=`basename $(pwd)`
+
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
+
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
+
+  username=`git config github.user`
+  if [ "$username" = "" ]; then
+  echo "Could not find username, run 'git config --global github.user &lt;username&gt;'"
+  invalid_credentials=1
+  fi
+
+  token=`git config github.token`
+  if [ "$token" = "" ]; then
+  echo "Could not find token, run 'git config --global github.token &lt;token&gt;'"
+  invalid_credentials=1
+  fi
+
+  if [ "$invalid_credentials" == "1" ]; then
+  return 1
+  fi
+
+  # echo some useful feedback and make a request to the API
+  echo -n "Creating Github repository '$repo_name' ..."
+  curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' &gt; /dev/null 2&gt;&amp;1
+
+ echo " done."
+
+}
+
+</code></pre>
+</div>
+
+<p>This makes a request to the <code class="highlighter-rouge">/user/repos</code> <a href="https://developer.github.com/v3/repos/#create">endpoint</a> using <a href="https://developer.github.com/v3/auth/#basic-authentication">basic authentication</a> to create a new GitHub repository.</p>
+
+<p>Finally,</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>
+github-create() {
+
+  repo_name=$1
+
+  dir_name=`basename $(pwd)`
+
+  if [ "$repo_name" = "" ]; then
+  echo "Repo name (hit enter to use '$dir_name')?"
+  read repo_name
+  fi
+
+  if [ "$repo_name" = "" ]; then
+  repo_name=$dir_name
+  fi
+
+  username=`git config github.user`
+  if [ "$username" = "" ]; then
+  echo "Could not find username, run 'git config --global github.user &lt;username&gt;'"
+  invalid_credentials=1
+  fi
+
+  token=`git config github.token`
+  if [ "$token" = "" ]; then
+  echo "Could not find token, run 'git config --global github.token &lt;token&gt;'"
+  invalid_credentials=1
+  fi
+
+  if [ "$invalid_credentials" == "1" ]; then
+  return 1
+  fi
+
+  echo -n "Creating Github repository '$repo_name' ..."
+  curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' &gt; /dev/null 2&gt;&amp;1
+
+  echo " done."
+
+  remote=`git remote -v`
+  if [ "$remote" = "" ]; then
+  echo "Add remote as origin (y/n)?"
+  read add_remote
+  fi
+
+  if [ "$add_remote" = "y" ]; then
+  url="https://github.com/$username/$repo_name"
+  `git remote add origin $url`
+  echo "Added '$url' to remote as 'origin'."
+  fi
+
+}
+
+</code></pre>
+</div>
 
 
   </section>

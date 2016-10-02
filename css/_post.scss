@@ -2,6 +2,13 @@ article.post {
   .post-date { font-size: 1.4rem; }
   .post-title { margin: 0; }
 
+  section.post-content {
+    p {
+      font-size: 18px;
+      line-height: 2;
+    }
+  }
+
   code {
     font-size: 1rem;
   }
