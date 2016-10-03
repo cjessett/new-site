@@ -95,9 +95,9 @@ github-create() {
 
 ```
 
-Here we check for a github username and token that have been set in the `~/.gitconfig` file. [Here](https://git-scm.com/docs/git-config) you can find info about setting options with `git config`.
+Here we check for a github username and token that have been set in the `~/.gitconfig` file. You can find info about setting options with `git config` [here](https://git-scm.com/docs/git-config).
 
-To check if you have set git config options run `git config -l` to list all of your config options. You can also run `git config` for help with the command.
+To check if you have set git config options run `git config -l` to list all of your config options. You can also run ` git config ` for help with the command.
 
 Running the command `git config --global github.user <YOUR_USERNAME>`, and likewise with `github.token`, will write to `~/.gitconfig` like so:
 
@@ -151,8 +151,7 @@ github-create() {
   # echo some useful feedback and make a request to the API
   echo -n "Creating Github repository '$repo_name' ..."
   curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
-
- echo " done."
+  echo " done."
 
 }
 
@@ -160,7 +159,9 @@ github-create() {
 
 This makes a request to the `/user/repos` [endpoint](https://developer.github.com/v3/repos/#create) using [basic authentication](https://developer.github.com/v3/auth/#basic-authentication) to create a new GitHub repository.
 
-Finally,
+That last bit of the `curl` command, `> /dev/null 2>&1` basically redirects and discards the standard output of the request, check out [this stackoverflow question](https://stackoverflow.com/questions/10508843/what-is-dev-null-21#10508862) for more info.
+
+Finally, we add a remote named `origin` for the repo we just created and push up our code.
 
 ```
 
@@ -197,22 +198,16 @@ github-create() {
 
   echo -n "Creating Github repository '$repo_name' ..."
   curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' > /dev/null 2>&1
-
   echo " done."
 
-  remote=`git remote -v`
-  if [ "$remote" = "" ]; then
-  echo "Add remote as origin (y/n)?"
-  read add_remote
-  fi
-
-  if [ "$add_remote" = "y" ]; then
-  url="https://github.com/$username/$repo_name"
-  `git remote add origin $url`
-  echo "Added '$url' to remote as 'origin'."
-  fi
+  # add repo to remote as 'origin' and push the code up
+  echo -n "Pushing local code to remote ..."
+  git remote add origin git@github.com:$username/$repo_name.git > /dev/null 2>&1
+  git push -u origin master > /dev/null 2>&1
+  echo " done."
 
 }
 
 ```
 
+Now if you open a new terminal window you can call `github-create` with an optional argument and you won't have to leave the comfort of that terminal to create a new GitHub repo!

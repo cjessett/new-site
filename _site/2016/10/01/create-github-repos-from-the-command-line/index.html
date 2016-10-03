@@ -5,7 +5,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,800|Raleway:400,200,700" rel="stylesheet" type="text/css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/atom-one-dark.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="//localhost:4000/css/main.css">
     <link rel="shortcut icon" href="favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="CJ Jessett. I'm a web developer, rock climber, and skiing enthusiast.
@@ -16,10 +16,10 @@
 <body>
 
 
-<nav class="small-12 large-offset-2 large-8 columns">
+<nav class="columns">
   <ul>
-    <li class=""><h4><a href="localhost:4000">Homepage</a></h4></li> |
-    <li class=""><h4><a href="localhost:4000/blog">Blog</a></h4></li>
+    <li class=""><h4><a href="//localhost:4000">Homepage</a></h4></li>
+    <li class=""><h4><a href="//localhost:4000/blog">Posts</a></h4></li>
   </ul>
 </nav>
 
@@ -128,9 +128,9 @@ github-create() {
 </code></pre>
 </div>
 
-<p>Here we check for a github username and token that have been set in the <code class="highlighter-rouge">~/.gitconfig</code> file. <a href="https://git-scm.com/docs/git-config">Here</a> you can find info about setting options with <code class="highlighter-rouge">git config</code>.</p>
+<p>Here we check for a github username and token that have been set in the <code class="highlighter-rouge">~/.gitconfig</code> file. You can find info about setting options with <code class="highlighter-rouge">git config</code> <a href="https://git-scm.com/docs/git-config">here</a>.</p>
 
-<p>To check if you have set git config options run <code class="highlighter-rouge">git config -l</code> to list all of your config options. You can also run <code class="highlighter-rouge">git config</code> for help with the command.</p>
+<p>To check if you have set git config options run <code class="highlighter-rouge">git config -l</code> to list all of your config options. You can also run ` git config ` for help with the command.</p>
 
 <p>Running the command <code class="highlighter-rouge">git config --global github.user &lt;YOUR_USERNAME&gt;</code>, and likewise with <code class="highlighter-rouge">github.token</code>, will write to <code class="highlighter-rouge">~/.gitconfig</code> like so:</p>
 
@@ -182,8 +182,7 @@ github-create() {
   # echo some useful feedback and make a request to the API
   echo -n "Creating Github repository '$repo_name' ..."
   curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' &gt; /dev/null 2&gt;&amp;1
-
- echo " done."
+  echo " done."
 
 }
 
@@ -192,7 +191,9 @@ github-create() {
 
 <p>This makes a request to the <code class="highlighter-rouge">/user/repos</code> <a href="https://developer.github.com/v3/repos/#create">endpoint</a> using <a href="https://developer.github.com/v3/auth/#basic-authentication">basic authentication</a> to create a new GitHub repository.</p>
 
-<p>Finally,</p>
+<p>That last bit of the <code class="highlighter-rouge">curl</code> command, <code class="highlighter-rouge">&gt; /dev/null 2&gt;&amp;1</code> basically redirects and discards the standard output of the request, check out <a href="https://stackoverflow.com/questions/10508843/what-is-dev-null-21#10508862">this stackoverflow question</a> for more info.</p>
+
+<p>Finally, we add a remote named <code class="highlighter-rouge">origin</code> for the repo we just created and push up our code.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>
 github-create() {
@@ -228,30 +229,54 @@ github-create() {
 
   echo -n "Creating Github repository '$repo_name' ..."
   curl -u "$username:$token" https://api.github.com/user/repos -d '{"name":"'$repo_name'"}' &gt; /dev/null 2&gt;&amp;1
-
   echo " done."
 
-  remote=`git remote -v`
-  if [ "$remote" = "" ]; then
-  echo "Add remote as origin (y/n)?"
-  read add_remote
-  fi
-
-  if [ "$add_remote" = "y" ]; then
-  url="https://github.com/$username/$repo_name"
-  `git remote add origin $url`
-  echo "Added '$url' to remote as 'origin'."
-  fi
+  # add repo to remote as 'origin' and push the code up
+  echo -n "Pushing local code to remote ..."
+  git remote add origin git@github.com:$username/$repo_name.git &gt; /dev/null 2&gt;&amp;1
+  git push -u origin master &gt; /dev/null 2&gt;&amp;1
+  echo " done."
 
 }
 
 </code></pre>
 </div>
 
+<p>Now if you open a new terminal window you can call <code class="highlighter-rouge">github-create</code> with an optional argument and you won’t have to leave the comfort of that terminal to create a new GitHub repo!</p>
 
+  </section>
+
+  <section class="footer">
+    <hr>
+    <p>
+      Thanks for reading! Feel free to <a href="//twitter.com/kep20f">tweet</a> at me with any questions or shoot me an <a href="mailto:cjessett@utexas.edu">email</a>.
+    </p>
+    <hr>
   </section>
 </article>
 
+
+
+    
+      <footer class="columns">
+        <div class="small-12 large-8 large-offset-2">
+          <ul class="list-1">
+            <li><h4>CJ Jessett</h4></li>
+            <li><a href="mailto:cjessett@utexas.edu">cjessett@utexas.edu</a></li>
+          </ul>
+          <ul class="list-2">
+            <li>
+              <span><i class="fa fa-github"></i></span>
+              <a href="//github.com/cjessett">cjessett</a>
+            </li>
+            <li>
+              <span><i class="fa fa-twitter"></i></span>
+              <a href="//twitter.com/kep20f">kep20f</a>
+            </li>
+          </ul>
+        </div>
+      </footer>
+    
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
