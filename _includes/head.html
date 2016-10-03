@@ -12,4 +12,8 @@
     <title>{{ page.title }} - {{ site.title }}</title>
 </head>
 
-<body>
+{% if page.url == '/' %}
+  <body class="fix-height">
+{% else %}
+  <body class="min-height">
+{% endif %}

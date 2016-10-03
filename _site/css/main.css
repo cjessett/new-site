@@ -52,7 +52,13 @@ article.post-preview .post-title {
   float: right; }
 
 .left {
-  float: leftl; }
+  float: left; }
+
+.fix-height {
+  height: 100%; }
+
+.min-height {
+  min-height: 100%; }
 
 *, *:before, *:after {
   box-sizing: inherit; }
@@ -89,8 +95,7 @@ a {
 body {
   position: relative;
   margin: 0;
-  padding-bottom: 8rem;
-  min-height: 100%;
+  padding-bottom: 7rem;
   font-family: "Raleway", Verdana, "Roboto", Arial, sans-serif;
   font-weight: normal;
   color: #0a0a0a;
@@ -106,9 +111,7 @@ body {
   body footer {
     border-top: 1px solid #e8e8e8;
     position: absolute;
-    padding: 1rem;
-    right: 0;
-    left: 0;
+    height: 6rem;
     bottom: 0; }
     body footer h4 {
       margin: 0; }
