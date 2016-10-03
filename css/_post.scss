@@ -1,6 +1,6 @@
 article.post {
   .post-date { font-size: 1.4rem; }
-  .post-title { margin-bottom: 0.5rem; }
+  .post-title { margin: 0; }
 
   section.post-content {
     p {
@@ -22,5 +22,5 @@ article.post {
 
 article.post-preview {
   .post-date { font-size: 1.4rem; }
-  .post-title { margin-bottom: 0.5rem; }
+  .post-title { margin: 0; }
 }
